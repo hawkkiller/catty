@@ -1,9 +1,9 @@
+import 'package:catty/src/core/widget/scope_widgets.dart';
+import 'package:catty/src/feature/app/widget/app_context.dart';
+import 'package:catty/src/feature/initialization/model/initialization_progress.dart';
+import 'package:catty/src/feature/initialization/widget/dependencies_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:sizzle_starter/src/core/widget/scope_widgets.dart';
-import 'package:sizzle_starter/src/feature/app/widget/app_context.dart';
-import 'package:sizzle_starter/src/feature/initialization/model/initialization_progress.dart';
-import 'package:sizzle_starter/src/feature/initialization/widget/dependencies_scope.dart';
 
 /// A widget which is responsible for running the app.
 class App extends StatelessWidget {

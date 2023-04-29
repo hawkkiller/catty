@@ -1,7 +1,6 @@
+import 'package:catty/src/core/localization/localization_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/generated_localizations.dart';
-import 'package:sizzle_starter/src/core/localization/localization_delegate.dart';
-import 'package:sizzle_starter/src/feature/sample/localization/sample_localization_delegate.dart';
 
 typedef GeneratedLocalization = GeneratedLocalizations;
 
@@ -24,7 +23,6 @@ class AppLocalization {
 
   /// Feature localization delegates
   static final featureDelegates = <LocalizationDelegate<Object>>[
-    SampleLocalizationDelegate(),
   ];
 
   /// Returns the localized strings for the given [context].

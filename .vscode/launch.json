@@ -5,18 +5,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "sizzle_starter",
+      "name": "catty",
       "request": "launch",
       "type": "dart"
     },
     {
-      "name": "sizzle_starter (profile mode)",
+      "name": "catty (profile mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
     },
     {
-      "name": "sizzle_starter (release mode)",
+      "name": "catty (release mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"

@@ -1,4 +1,4 @@
-import 'package:sizzle_starter/src/feature/initialization/model/initialization_progress.dart';
+import 'package:catty/src/feature/initialization/model/initialization_progress.dart';
 
 /// A hook for the initialization process.
 ///
