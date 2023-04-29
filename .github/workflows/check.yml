@@ -1,0 +1,61 @@
+on:
+  push:
+    branches:
+      - "feature/**"
+      - "bugfix/**"
+      - "hotfix/**"
+      - "support/**"
+      - "master"
+  pull_request:
+    branches:
+      - "feature/**"
+      - "bugfix/**"
+      - "hotfix/**"
+      - "support/**"
+      - "dependabot/**"
+  workflow_dispatch:
+
+jobs:
+  test-analyze:
+    runs-on: ubuntu-latest
+    container:
+      image: michaellazebny/flutter:stable
+      options: --user root
+
+    steps:
+      - name: 🫰 Check flutter version
+        run: flutter --version
+
+      - name: 🚂 Get latest code
+        uses: actions/checkout@v2
+
+      - name: 🐝 Dart tools activation
+        run: |
+          dart pub global activate coverage
+
+      - name: 👷 Install Dependencies
+        timeout-minutes: 1
+        run: flutter pub get
+
+      - name: 😊 Run codegen
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: 🔎 Check format
+        timeout-minutes: 1
+        run: |
+          dart format -l 100 --set-exit-if-changed $(find lib test -name "*.dart" -not \( -name "*.*.dart" \) )
+
+      - name: 📈 Check analyzer
+        timeout-minutes: 1
+        run: |
+          flutter analyze --fatal-infos --fatal-warnings
+
+      - name: 🧪 Run tests
+        timeout-minutes: 2
+        run: |
+          flutter test --coverage -r expanded
+
+      - name: 📥 Upload coverage to Codecov
+        if: ${{ github.ref == 'refs/heads/main' }}
+        timeout-minutes: 1
+        uses: codecov/codecov-action@v2.1.0

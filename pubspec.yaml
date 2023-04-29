@@ -1,0 +1,97 @@
+name: sizzle_starter
+description: Your description
+
+# Prevent accidental publishing to pub.dev.
+publish_to: "none"
+
+version: 0.0.1+1
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+  flutter: ">=3.7.0 <4.0.0"
+
+dependencies:
+  # SDK
+  flutter:
+    sdk: flutter
+  collection: 1.17.0
+  async: 2.10.0
+  meta: 1.8.0
+
+  # Stream
+  stream_transform: 2.1.0
+  rxdart: 0.27.7
+
+  # BLoC
+  flutter_bloc: ^8.1.2
+
+  # HTTTP
+  http: 0.13.5
+
+  # Router
+  auto_route: ^6.3.0
+
+  # Firebase
+  firebase_analytics: ^10.1.5
+  firebase_core: ^2.7.0
+
+  # l10n
+  intl: 0.17.0
+  flutter_localizations:
+    sdk: flutter
+
+  # Path receiving/manipulation
+  path_provider: ^2.0.12
+  path: ^1.8.2
+
+  # Persisting
+  drift: ^2.5.0
+  sqlite3_flutter_libs: ^0.5.13
+  shared_preferences: ^2.0.17
+
+  # Codegen annotations
+  json_annotation: ^4.8.0
+  freezed_annotation: 2.2.0
+
+  # Logging
+  stack_trace: 1.11.0
+  l: 3.2.0
+  sentry_flutter: ^7.1.0
+
+  # Lints
+  sizzle_lints: 1.0.10
+
+  # Helpers
+  pure: 0.2.0
+  platform_info: ^3.2.0
+
+dev_dependencies:
+  # Testing
+  flutter_test:
+    sdk: flutter
+
+  # Codegen
+  freezed: 2.3.2
+  json_serializable: ^6.6.1
+  build_runner: 2.3.3
+  drift_dev: ^2.5.1
+  auto_route_generator: ^6.0.3
+
+  # Utilities
+  flutter_launcher_icons: ^0.13.0
+  flutter_native_splash: ^2.2.19
+  flutter_gen_runner: ^5.3.0
+
+flutter:
+  uses-material-design: true
+
+  # Enable generation of localized Strings from arb files.
+  generate: true
+
+  assets:
+    # Add assets from the images directory to the application.
+    - assets/images/
+
+flutter_gen:
+  output: lib/src/core/assets/generated
+  line_length: 100
