@@ -22,7 +22,7 @@ class FactsHistoryRepositoryImpl implements FactsHistoryRepository {
           (dto) => CatsHistoryEntity(
             fact: dto.fact,
             link: dto.link,
-            createdAt: DateTime.fromMillisecondsSinceEpoch(dto.createdAt.toInt()),
+            createdAt: DateTime.fromMillisecondsSinceEpoch(dto.createdAt*1000),
           ),
         )
         .toList();

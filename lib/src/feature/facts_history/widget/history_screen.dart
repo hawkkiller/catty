@@ -31,6 +31,10 @@ class HistoryScreen extends StatelessWidget {
                     (context, index) => Padding(
                       padding: const EdgeInsets.only(top: 16),
                       child: ListTile(
+                        subtitle: Text(
+                          state.factsHistory[index].createdAt.toString(),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
                         contentPadding: const EdgeInsets.all(16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
@@ -38,7 +42,9 @@ class HistoryScreen extends StatelessWidget {
                         tileColor: Theme.of(context).colorScheme.secondaryContainer,
                         title: Text(
                           state.factsHistory[index].fact,
-                          style: Theme.of(context).textTheme.bodyLarge,
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                color: Theme.of(context).colorScheme.onSecondaryContainer,
+                              ),
                         ),
                         leading: CachedNetworkImage(
                           fit: BoxFit.cover,
