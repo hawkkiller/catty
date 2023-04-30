@@ -12,7 +12,7 @@ part 'initialization_progress.freezed.dart';
 class RepositoriesStore with _$RepositoriesStore {
   const factory RepositoriesStore({
     required FactsRepository factsRepository,
-    required FactsHistoryRepository factsHistoryRepository
+    required FactsHistoryRepository factsHistoryRepository,
   }) = _RepositoriesStore;
 }
 
