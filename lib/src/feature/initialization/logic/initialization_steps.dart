@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:catty/src/core/database/catty_database.dart';
 import 'package:catty/src/core/router/router.dart';
 import 'package:catty/src/feature/facts/data/cat_images_data_source.dart';
 import 'package:catty/src/feature/facts/data/facts_data_source.dart';
 import 'package:catty/src/feature/facts/data/facts_repository.dart';
+import 'package:catty/src/feature/facts_history/data/facts_history_data_source.dart';
+import 'package:catty/src/feature/facts_history/data/facts_history_repository.dart';
 import 'package:catty/src/feature/initialization/model/initialization_progress.dart';
 import 'package:dart_openai/openai.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,6 +35,12 @@ mixin InitializationSteps {
       return progress.copyWith(
         router: router,
       );
+    },
+    'Init Drift Database': (progress) {
+      final cattyDatabase = CattyDatabase(name: 'catty');
+      return progress.copyWith(
+        database: cattyDatabase,
+      );
     }
   };
   static final _data = <String, StepAction>{
@@ -42,6 +51,14 @@ mixin InitializationSteps {
       );
       return progress.copyWith(
         factsRepository: factsRepository,
+      );
+    },
+    'Init Facts History Repository': (progress) {
+      final factsHistoryRepository = FactsHistoryRepositoryImpl(
+        CatsHistoryDao(progress.database!),
+      );
+      return progress.copyWith(
+        factsHistoryRepository: factsHistoryRepository,
       );
     },
   };

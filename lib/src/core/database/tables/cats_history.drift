@@ -1,0 +1,9 @@
+CREATE TABLE cats_history (
+    id INT NOT NULL PRIMARY KEY AUTOINCREMENT,
+    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fact VARCHAR(255) NOT NULL,
+    link VARCHAR(255) NOT NULL
+);
+
+createEntry: INSERT INTO cats_history (fact, link) VALUES (:fact, :link);

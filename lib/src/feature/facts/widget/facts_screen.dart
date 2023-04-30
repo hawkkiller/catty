@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:catty/src/core/utils/extensions/context_extension.dart';
 import 'package:catty/src/feature/facts/bloc/facts_bloc.dart';
 import 'package:catty/src/feature/facts/localization/facts_localization_delegate.dart';
+import 'package:catty/src/feature/facts_history/bloc/facts_history_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,7 +29,20 @@ class _FactsScreenState extends State<FactsScreen> {
           child: const Icon(Icons.generating_tokens),
         ),
         backgroundColor: Theme.of(context).colorScheme.background,
-        body: BlocBuilder<FactsBloc, FactsState>(
+        body: BlocConsumer<FactsBloc, FactsState>(
+          listener: (context, state) {
+            state.maybeMap(
+              orElse: () {},
+              success: (value) {
+                context.read<FactsHistoryBloc>().add(
+                      FactsHistoryEvent.insert(
+                        fact: value.fact,
+                        image: value.image,
+                      ),
+                    );
+              },
+            );
+          },
           builder: (context, state) => Padding(
             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             child: ListView(

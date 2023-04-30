@@ -1,6 +1,7 @@
 import 'package:catty/src/core/widget/scope_widgets.dart';
 import 'package:catty/src/feature/app/widget/app_context.dart';
 import 'package:catty/src/feature/facts/bloc/facts_bloc.dart';
+import 'package:catty/src/feature/facts_history/bloc/facts_history_bloc.dart';
 import 'package:catty/src/feature/initialization/model/initialization_progress.dart';
 import 'package:catty/src/feature/initialization/widget/dependencies_scope.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,10 @@ class App extends StatelessWidget {
                 ..add(
                   const FactsEvent.load(),
                 ),
+            ),
+            BlocProvider(
+              create: (context) => FactsHistoryBloc(result.repositories.factsHistoryRepository)
+                ..add(const FactsHistoryEvent.load()),
             ),
           ],
           child: ScopeProvider(
