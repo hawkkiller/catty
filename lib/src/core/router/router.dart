@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:catty/src/feature/facts/widget/facts_screen.dart';
 import 'package:catty/src/feature/facts_history/widget/history_screen.dart';
 import 'package:catty/src/feature/feed/widget/feed_screen.dart';
 
