@@ -1,5 +1,5 @@
+import 'package:catty/src/core/localization/app_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:sizzle_starter/src/core/localization/app_localization.dart';
 
 abstract class LocalizationDelegate<T> extends LocalizationsDelegate<T> {
   LocalizationDelegate(this._delegateFactory);
@@ -13,7 +13,7 @@ abstract class LocalizationDelegate<T> extends LocalizationsDelegate<T> {
   }
 
   @override
-  bool shouldReload(covariant LocalizationsDelegate<T> old) => false;
+  bool shouldReload(covariant LocalizationsDelegate<T> old) => old != this;
 
   @override
   bool isSupported(Locale locale) => GeneratedLocalization.delegate.isSupported(locale);

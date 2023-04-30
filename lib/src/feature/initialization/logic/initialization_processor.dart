@@ -1,9 +1,9 @@
+import 'package:catty/src/feature/app/logic/tracking_manager.dart';
+import 'package:catty/src/feature/initialization/logic/initialization_steps.dart';
+import 'package:catty/src/feature/initialization/model/environment_store.dart';
+import 'package:catty/src/feature/initialization/model/initialization_hook.dart';
+import 'package:catty/src/feature/initialization/model/initialization_progress.dart';
 import 'package:flutter/foundation.dart';
-import 'package:sizzle_starter/src/feature/app/logic/tracking_manager.dart';
-import 'package:sizzle_starter/src/feature/initialization/logic/initialization_steps.dart';
-import 'package:sizzle_starter/src/feature/initialization/model/environment_store.dart';
-import 'package:sizzle_starter/src/feature/initialization/model/initialization_hook.dart';
-import 'package:sizzle_starter/src/feature/initialization/model/initialization_progress.dart';
 
 part 'initialization_factory.dart';
 
@@ -15,8 +15,8 @@ mixin InitializationProcessor {
   }) async {
     final stopwatch = Stopwatch()..start();
     var stepCount = 0;
-    var progress = const InitializationProgress();
     final env = factory.getEnvironmentStore();
+    var progress = InitializationProgress(environment: env);
     final trackingManager = factory.createTrackingManager(env);
     await trackingManager.enableReporting(
       shouldSend: !kDebugMode && env.isProduction,

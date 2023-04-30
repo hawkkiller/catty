@@ -1,4 +1,17 @@
-# Sizzle Starter
+# Catty (generated from sizzle starter)
+
+An example of cool Flutter Architecture and best practices. Shows information about cats :)
+
+In order to launch this application you need to set two dart defines
+
+(if not specified, then there would be some limitations)
+thecatapi-key - your api key from <https://thecatapi.com/>
+
+openai-key - your api key from <https://beta.openai.com/>
+
+---
+
+## Sizzle Starter
 
 This Flutter project template provides a starting point for your Flutter projects, saving you time and effort in the setup process. It incorporates best practices and lessons learned from other Flutter templates and repositories, with a few new and unique features.
 
@@ -17,17 +30,25 @@ To use this template, simply click the "Use this template" button. The instructi
 
 ## Contents
 
-- [Initialization](#initialization)
-- [Themes](#themes)
-- [Recommended libraries](#recommended-libraries)
-  - [Core](#core)
-  - [External](#external)
-- [Not Recommended libraries](#not-recommended-libraries)
-- [Resources](#resources)
-- [How to guides](#how-to-guides)
-  - [How to run](#how-to-run)
-  - [How to add a new dependency](#how-to-add-a-new-dependency)
-- [Credits](#credits)
+- [Catty (generated from sizzle starter)](#catty-generated-from-sizzle-starter)
+  - [Sizzle Starter](#sizzle-starter)
+  - [Features](#features)
+  - [Contents](#contents)
+  - [Initialization](#initialization)
+    - [initialization\_steps](#initialization_steps)
+    - [initialization\_progress](#initialization_progress)
+    - [initialization\_processor](#initialization_processor)
+    - [dependencies\_scope](#dependencies_scope)
+  - [Themes](#themes)
+  - [Recommended libraries](#recommended-libraries)
+    - [Core](#core)
+    - [External](#external)
+    - [Not Recommended libraries](#not-recommended-libraries)
+  - [Resources](#resources)
+  - [How to guides](#how-to-guides)
+    - [How to run](#how-to-run)
+    - [How to add a new dependency](#how-to-add-a-new-dependency)
+  - [Credits](#credits)
 
 ## Initialization
 
