@@ -37,7 +37,7 @@ class FactsState with _$FactsState {
         inProgress: (s) => s.image != null,
         orElse: () => false,
       );
-  
+
   bool get inProgress => maybeMap(
         inProgress: (_) => true,
         orElse: () => false,

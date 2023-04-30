@@ -15,8 +15,7 @@ class CatImageDto with _$CatImageDto {
 
   const CatImageDto._();
 
-  factory CatImageDto.fromJson(Map<String, dynamic> json) =>
-      _$CatImageDtoFromJson(json);
+  factory CatImageDto.fromJson(Map<String, dynamic> json) => _$CatImageDtoFromJson(json);
 
   CatImageEntity toEntity() => CatImageEntity(
         url: url,

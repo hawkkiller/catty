@@ -16,8 +16,7 @@ class CatsHistoryDao extends DatabaseAccessor<CattyDatabase>
   CatsHistoryDao(super.attachedDatabase);
 
   @override
-  Future<List<CatsHistoryData>> getAllCatsHistory() =>
-      select(attachedDatabase.catsHistory).get();
+  Future<List<CatsHistoryData>> getAllCatsHistory() => select(attachedDatabase.catsHistory).get();
 
   @override
   Future<void> insert(CatsHistoryCompanion entry) =>
