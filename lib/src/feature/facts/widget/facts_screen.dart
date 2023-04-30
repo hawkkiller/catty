@@ -7,18 +7,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
-class FactsScreen extends StatelessWidget {
+class FactsScreen extends StatefulWidget {
   const FactsScreen({super.key});
+
+  @override
+  State<FactsScreen> createState() => _FactsScreenState();
+}
+
+class _FactsScreenState extends State<FactsScreen> {
+  void _loadFacts() {
+    context.read<FactsBloc>().add(
+          const FactsEvent.load(),
+        );
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
         floatingActionButton: FloatingActionButton.large(
+          onPressed: _loadFacts,
           child: const Icon(Icons.generating_tokens),
-          onPressed: () {
-            context.read<FactsBloc>().add(
-                  const FactsEvent.load(),
-                );
-          },
         ),
         backgroundColor: Theme.of(context).colorScheme.background,
         body: BlocBuilder<FactsBloc, FactsState>(
@@ -42,16 +49,53 @@ class FactsScreen extends StatelessWidget {
                   child: SizedBox(
                     height: 324,
                     width: double.infinity,
-                    child: state.isImageLoaded
-                        ? CachedNetworkImage(
+                    child: state.maybeMap(
+                      orElse: () {
+                        if (state.isImageLoaded) {
+                          return CachedNetworkImage(
                             imageUrl: state.image!.url,
                             fit: BoxFit.cover,
                             progressIndicatorBuilder: (context, url, progress) =>
                                 const CircularProgressIndicator.adaptive(),
-                          )
-                        : const Center(
+                          );
+                        }
+                        if (state.inProgress) {
+                          return const Center(
                             child: CircularProgressIndicator.adaptive(),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                      failure: (f) => Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text.rich(
+                            TextSpan(
+                              text: context.stringOf<FactsStrings>().error,
+                              children: [
+                                WidgetSpan(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 8),
+                                    child: Icon(
+                                      Icons.error,
+                                      color: Theme.of(context).colorScheme.error,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                  color: Theme.of(context).colorScheme.error,
+                                ),
                           ),
+                          IconButton(
+                            onPressed: _loadFacts,
+                            icon: const Icon(Icons.refresh),
+                            tooltip: context.stringOf<FactsStrings>().clickToRetry,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
                 Padding(

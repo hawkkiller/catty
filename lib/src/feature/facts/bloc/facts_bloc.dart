@@ -27,9 +27,24 @@ class FactsState with _$FactsState {
     required CatImageEntity image,
   }) = _FactsStateSuccess;
 
+  const factory FactsState.failure({
+    required String fact,
+    CatImageEntity? image,
+  }) = _FactsStateFailure;
+
   bool get isImageLoaded => maybeMap(
         success: (_) => true,
         inProgress: (s) => s.image != null,
+        orElse: () => false,
+      );
+  
+  bool get inProgress => maybeMap(
+        inProgress: (_) => true,
+        orElse: () => false,
+      );
+
+  bool get isFailure => maybeMap(
+        failure: (_) => true,
         orElse: () => false,
       );
 
@@ -68,29 +83,28 @@ class FactsBloc extends Bloc<FactsEvent, FactsState> {
         if (event is String) {
           completion.add(event);
           emit(
-            FactsState.inProgress(
-              fact: completion.join(),
-              image: state.image,
-            ),
+            FactsState.inProgress(fact: completion.join(), image: state.image),
           );
         }
         if (event is CatImageEntity) {
           emit(
-            FactsState.inProgress(
-              fact: state.fact,
-              image: event,
-            ),
+            FactsState.inProgress(fact: state.fact, image: event),
           );
         }
       }
       emit(
         FactsState.success(
-          fact: completion.join(),
+          fact: state.fact,
           image: state.image!,
         ),
       );
-    } on Object catch (e) {
-      // emit(FactsState.idle());
+    } on Object catch (_) {
+      emit(
+        FactsState.failure(
+          fact: state.fact,
+          image: state.image,
+        ),
+      );
       rethrow;
     }
   }

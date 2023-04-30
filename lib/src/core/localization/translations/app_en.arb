@@ -3,5 +3,7 @@
   "history": "History",
   "explore_facts": "Explore Facts",
   "explore_facts_description": "Press the floating button to generate a random cat fact",
-  "generate_fact": "Generate Fact!"
+  "generate_fact": "Generate Fact!",
+  "error": "An unexpected error occurred",
+  "click_to_retry": "Click to retry"
 }

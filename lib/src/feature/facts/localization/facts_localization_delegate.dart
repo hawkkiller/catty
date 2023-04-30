@@ -7,6 +7,10 @@ abstract class FactsStrings {
   String get description;
 
   String get generateFact;
+
+  String get error;
+
+  String get clickToRetry;
 }
 
 class FactsLocalizationDelegate extends LocalizationDelegate<FactsStrings> {
@@ -26,4 +30,10 @@ class _FactsStringsImpl implements FactsStrings {
 
   @override
   String get generateFact => localization.generate_fact;
+
+  @override
+  String get error => localization.error;
+
+  @override
+  String get clickToRetry => localization.click_to_retry;
 }
