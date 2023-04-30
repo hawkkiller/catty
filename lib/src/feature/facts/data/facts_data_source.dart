@@ -13,11 +13,12 @@ class FactsDataSourceGPT implements FactsDataSource {
   @override
   Stream<String> getFact() => OpenAI.instance.chat
       .createStream(
+        temperature: .8,
         model: 'gpt-3.5-turbo',
         messages: [
           const OpenAIChatCompletionChoiceMessageModel(
             content: 'Generate a random fact about cats, maximum 200 characters.',
-            role: OpenAIChatMessageRole.user,
+            role: OpenAIChatMessageRole.assistant,
           ),
         ],
       )

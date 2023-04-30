@@ -4,7 +4,9 @@ An example of cool Flutter Architecture and best practices. Shows information ab
 
 In order to launch this application you need to set two dart defines
 
+(if not specified, then there would be some limitations)
 thecatapi-key - your api key from <https://thecatapi.com/>
+
 openai-key - your api key from <https://beta.openai.com/>
 
 ---

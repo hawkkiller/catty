@@ -42,11 +42,16 @@ class FactsScreen extends StatelessWidget {
                   child: SizedBox(
                     height: 324,
                     width: double.infinity,
-                    child: CachedNetworkImage(
-                      imageUrl:
-                          'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/2880px-Cat_August_2010-4.jpg',
-                      fit: BoxFit.cover,
-                    ),
+                    child: state.isImageLoaded
+                        ? CachedNetworkImage(
+                            imageUrl: state.image!.url,
+                            fit: BoxFit.cover,
+                            progressIndicatorBuilder: (context, url, progress) =>
+                                const CircularProgressIndicator.adaptive(),
+                          )
+                        : const Center(
+                            child: CircularProgressIndicator.adaptive(),
+                          ),
                   ),
                 ),
                 Padding(

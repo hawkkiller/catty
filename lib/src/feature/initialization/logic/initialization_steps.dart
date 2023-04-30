@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:catty/src/core/router/router.dart';
+import 'package:catty/src/feature/facts/data/cat_images_data_source.dart';
 import 'package:catty/src/feature/facts/data/facts_data_source.dart';
 import 'package:catty/src/feature/facts/data/facts_repository.dart';
 import 'package:catty/src/feature/initialization/model/initialization_progress.dart';
@@ -36,7 +37,8 @@ mixin InitializationSteps {
   static final _data = <String, StepAction>{
     'Init Facts Repository': (progress) {
       final factsRepository = FactsRepositoryImpl(
-        FactsDataSourceGPT(),
+        factsDataSource: FactsDataSourceGPT(),
+        catImagesDataSource: CatImagesDataSourceTheCatApi(),
       );
       return progress.copyWith(
         factsRepository: factsRepository,
