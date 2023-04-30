@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:catty/src/core/router/router.dart';
+import 'package:catty/src/feature/facts/data/facts_data_source.dart';
+import 'package:catty/src/feature/facts/data/facts_repository.dart';
 import 'package:catty/src/feature/initialization/model/initialization_progress.dart';
+import 'package:dart_openai/openai.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 typedef StepAction = FutureOr<InitializationProgress>? Function(
@@ -13,6 +16,10 @@ mixin InitializationSteps {
     ..._data,
   };
   static final _dependencies = <String, StepAction>{
+    'Init OpenAI': (progress) {
+      OpenAI.apiKey = progress.environment.openaiKey;
+      return progress;
+    },
     'Init Shared Preferences': (progress) async {
       final sharedPreferences = await SharedPreferences.getInstance();
       return progress.copyWith(
@@ -26,5 +33,14 @@ mixin InitializationSteps {
       );
     }
   };
-  static final _data = <String, StepAction>{};
+  static final _data = <String, StepAction>{
+    'Init Facts Repository': (progress) {
+      final factsRepository = FactsRepositoryImpl(
+        FactsDataSourceGPT(),
+      );
+      return progress.copyWith(
+        factsRepository: factsRepository,
+      );
+    },
+  };
 }

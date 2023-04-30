@@ -64,6 +64,9 @@ dependencies:
   # Helpers
   pure: 0.2.0
   platform_info: ^3.2.0
+  dart_openai: ^1.9.6
+  bloc_concurrency: ^0.2.1
+  cached_network_image: ^3.2.3
 
 dev_dependencies:
   # Testing

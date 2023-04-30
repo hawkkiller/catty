@@ -1,10 +1,7 @@
 {
-  "appTitle": "catty",
-  "@appTitle": {
-    "description": "The title of the application"
-  },
-  "samplePlaceholder": "Sample placeholder {value}",
-  "@samplePlaceholder": {
-    "description": "Sample placeholder"
-  }
+  "cat_facts": "Cat Facts",
+  "history": "History",
+  "explore_facts": "Explore Facts",
+  "explore_facts_description": "Press the floating button to generate a random cat fact",
+  "generate_fact": "Generate Fact!"
 }

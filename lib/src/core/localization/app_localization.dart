@@ -1,4 +1,6 @@
 import 'package:catty/src/core/localization/localization_delegate.dart';
+import 'package:catty/src/feature/facts/localization/facts_localization_delegate.dart';
+import 'package:catty/src/feature/feed/localization/feed_localization_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/generated_localizations.dart';
 
@@ -23,6 +25,8 @@ class AppLocalization {
 
   /// Feature localization delegates
   static final featureDelegates = <LocalizationDelegate<Object>>[
+    FeedLocalizationDelegate(),
+    FactsLocalizationDelegate()
   ];
 
   /// Returns the localized strings for the given [context].

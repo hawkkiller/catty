@@ -1,4 +1,7 @@
 import 'package:catty/src/core/router/router.dart';
+import 'package:catty/src/feature/facts/data/facts_data_source.dart';
+import 'package:catty/src/feature/facts/data/facts_repository.dart';
+import 'package:catty/src/feature/initialization/model/environment_store.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -6,7 +9,9 @@ part 'initialization_progress.freezed.dart';
 
 @freezed
 class RepositoriesStore with _$RepositoriesStore {
-  const factory RepositoriesStore() = _RepositoriesStore;
+  const factory RepositoriesStore({
+    required FactsRepository factsRepository,
+  }) = _RepositoriesStore;
 }
 
 @freezed
@@ -22,8 +27,10 @@ class DependenciesStore with _$DependenciesStore {
 @freezed
 class InitializationProgress with _$InitializationProgress {
   const factory InitializationProgress({
+    required IEnvironmentStore environment,
     SharedPreferences? preferences,
     AppRouter? router,
+    FactsRepository? factsRepository,
   }) = _InitializationProgress;
 
   const InitializationProgress._();
@@ -33,7 +40,9 @@ class InitializationProgress with _$InitializationProgress {
         router: router!,
       );
 
-  RepositoriesStore repositories() => const RepositoriesStore();
+  RepositoriesStore repositories() => RepositoriesStore(
+    factsRepository: factsRepository!,
+  );
 }
 
 @freezed

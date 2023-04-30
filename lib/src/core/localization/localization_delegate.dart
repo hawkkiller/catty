@@ -13,7 +13,7 @@ abstract class LocalizationDelegate<T> extends LocalizationsDelegate<T> {
   }
 
   @override
-  bool shouldReload(covariant LocalizationsDelegate<T> old) => false;
+  bool shouldReload(covariant LocalizationsDelegate<T> old) => old != this;
 
   @override
   bool isSupported(Locale locale) => GeneratedLocalization.delegate.isSupported(locale);

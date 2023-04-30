@@ -15,8 +15,8 @@ mixin InitializationProcessor {
   }) async {
     final stopwatch = Stopwatch()..start();
     var stepCount = 0;
-    var progress = const InitializationProgress();
     final env = factory.getEnvironmentStore();
+    var progress = InitializationProgress(environment: env);
     final trackingManager = factory.createTrackingManager(env);
     await trackingManager.enableReporting(
       shouldSend: !kDebugMode && env.isProduction,
