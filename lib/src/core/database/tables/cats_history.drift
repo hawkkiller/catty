@@ -1,7 +1,0 @@
-CREATE TABLE cats_history (
-    id INT NOT NULL PRIMARY KEY AUTOINCREMENT,
-    createdAt INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
-    updatedAt INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
-    fact VARCHAR(255) NOT NULL,
-    link VARCHAR(255) NOT NULL
-);

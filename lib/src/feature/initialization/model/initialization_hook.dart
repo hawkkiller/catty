@@ -1,15 +1,20 @@
-import 'package:catty/src/feature/initialization/model/initialization_progress.dart';
+import 'package:catty/src/feature/initialization/logic/initialization_processor.dart';
+import 'package:catty/src/feature/initialization/model/dependencies.dart';
 
+/// {@template initialization_hook}
 /// A hook for the initialization process.
 ///
 /// The [onInit] is called before the initialization process starts.
 ///
-/// The [onInitializing] is called when the initialization process is in progress.
+/// The [onInitializing] is called when the
+/// initialization process is in progress.
 ///
 /// The [onInitialized] is called when the initialization process is finished.
 ///
 /// The [onError] is called when the initialization process is failed.
-abstract class InitializationHook {
+/// {@endtemplate}
+abstract interface class InitializationHook {
+  /// {@macro initialization_hook}
   InitializationHook({
     this.onInit,
     this.onInitializing,
@@ -17,23 +22,28 @@ abstract class InitializationHook {
     this.onError,
   });
 
+  /// Setup the initialization hook.
   factory InitializationHook.setup({
     void Function()? onInit,
-    void Function(InitializationProgress)? onInitializing,
+    void Function(InitializationStepInfo info)? onInitializing,
     void Function(InitializationResult)? onInitialized,
-    void Function(int)? onError,
+    void Function(int, Object error)? onError,
   }) = _Hook;
 
+  /// Called before the initialization process starts.
   void Function()? onInit;
 
-  void Function(InitializationProgress)? onInitializing;
+  /// Called when the initialization process is in progress.
+  void Function(InitializationStepInfo info)? onInitializing;
 
+  /// Called when the initialization process is finished.
   void Function(InitializationResult)? onInitialized;
 
-  void Function(int)? onError;
+  /// Called when the initialization process is failed.
+  void Function(int, Object error)? onError;
 }
 
-class _Hook extends InitializationHook {
+final class _Hook extends InitializationHook {
   _Hook({
     super.onInit,
     super.onInitializing,

@@ -8,7 +8,7 @@
 PRODUCT_NAME = catty
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = dev.themisha.catty;
+PRODUCT_BUNDLE_IDENTIFIER = io.lazebny.catty
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2023 com.example. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2023 io.lazebny. All rights reserved.

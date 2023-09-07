@@ -1,74 +1,56 @@
-// Authored by Yakov K.
 import 'dart:async';
 
-import 'package:l/l.dart';
-import 'package:pure/pure.dart';
+import 'package:catty/src/core/utils/logger.dart';
+import 'package:flutter/foundation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:stream_transform/stream_transform.dart';
 
-/// A class which is responsible for managing error tracking.
+/// A class which is responsible for disabling error tracking.
 abstract class ErrorTrackingDisabler {
+  /// Disables error tracking.
   Future<void> disableReporting();
 }
 
-/// A class which is responsible for managing error tracking.
+/// {@template error_tracking_manager}
+/// A class which is responsible for enabling error tracking.
+/// {@endtemplate}
 abstract class ErrorTrackingManager implements ErrorTrackingDisabler {
+  /// Enables error tracking.
   Future<void> enableReporting({required bool shouldSend});
 }
 
-typedef _CompleteSubscription = void Function([
-  StreamSubscription<void>? subscription,
-]);
-
-///
+/// {@template sentry_tracking_manager}
+/// A class that is responsible for managing Sentry error tracking.
+/// {@endtemplate}
 class SentryTrackingManager implements ErrorTrackingManager {
+  /// {@macro sentry_tracking_manager}
   SentryTrackingManager({
     required String sentryDsn,
   }) : _sentryDsn = sentryDsn;
 
   final String _sentryDsn;
 
-  Completer<StreamSubscription<void>?>? _subscriptionCompleter;
+  Completer<StreamSubscription<void>?>? _sentryCompleter;
 
-  static Stream<LogMessageWithStackTrace> get _warningsAndErrors =>
-      l.where(_isWarningOrError).whereType<LogMessageWithStackTrace>();
+  /// Catch only warnings and errors
+  static Stream<LogMessage> get _warningsAndErrors =>
+      logger.logs.where(_isWarningOrError);
 
-  static bool _true() => true;
-  static bool _false() => false;
-
-  static bool _isWarningOrError(LogMessage message) => message.level.maybeWhen(
-        warning: _true,
-        error: _true,
-        orElse: _false,
-      );
+  static bool _isWarningOrError(LogMessage log) => switch (log.logLevel) {
+        LoggerLevel.error => true,
+        LoggerLevel.warning => true,
+        _ => false,
+      };
 
   static Future<SentryId> _captureException(
-    LogMessageWithStackTrace message,
+    LogMessage log,
   ) =>
       Sentry.captureException(
-        message.message,
-        stackTrace: message.stackTrace,
+        log.message,
+        stackTrace: log.stackTrace,
       );
 
-  Future<void> _onFirstCall(
-    Future<void> Function(_CompleteSubscription complete) body,
-  ) async {
-    if (_subscriptionCompleter == null) {
-      final completer = _subscriptionCompleter = Completer();
-      try {
-        await body(completer.complete);
-      } on Object {
-        completer.complete();
-        rethrow;
-      }
-    } else {
-      await _subscriptionCompleter?.future;
-    }
-  }
-
-  Future<void> _initSentry(
+  Future<StreamSubscription<SentryId>?> _initSentry(
     bool shouldSend,
-    _CompleteSubscription complete,
   ) async {
     if (_sentryDsn.isNotEmpty && shouldSend) {
       await SentryFlutter.init(
@@ -76,29 +58,39 @@ class SentryTrackingManager implements ErrorTrackingManager {
           ..dsn = _sentryDsn
           ..tracesSampleRate = 1,
       );
-      complete(
-        _warningsAndErrors.asyncMap(_captureException).listen(null.constant),
-      );
+      return _warningsAndErrors.asyncMap(_captureException).listen(null);
     } else {
-      complete();
+      return null;
     }
   }
 
   @override
-  Future<void> enableReporting({required bool shouldSend}) => _onFirstCall(
-        _initSentry.curry(shouldSend),
+  Future<void> enableReporting({required bool shouldSend}) async {
+    if (_sentryCompleter != null) {
+      logger.warning(
+        'Tried enabling error reporting when '
+        'it was already enabled.',
       );
+      await _sentryCompleter?.future;
+      return SynchronousFuture(null);
+    }
+
+    _sentryCompleter = Completer<StreamSubscription<void>?>()
+      ..complete(_initSentry(shouldSend));
+
+    await _sentryCompleter?.future;
+  }
 
   @override
   Future<void> disableReporting() async {
-    final subscription = await _subscriptionCompleter?.future;
-    if (subscription == null) {
-      l.w(
+    if (_sentryCompleter == null) {
+      logger.warning(
         'Tried disabling error reporting when '
-        'it was not enabled in the first place.',
+        'it was not enabled',
       );
     } else {
-      await subscription.cancel();
+      await (await _sentryCompleter?.future)?.cancel();
+      _sentryCompleter = null;
     }
   }
 }

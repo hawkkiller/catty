@@ -1,46 +1,35 @@
 import 'package:catty/src/core/utils/mixin/scope_mixin.dart';
-import 'package:catty/src/feature/initialization/model/initialization_progress.dart';
+import 'package:catty/src/feature/initialization/model/dependencies.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-abstract class StoresContainer {
-  DependenciesStore get dependencies;
-  RepositoriesStore get repositories;
-}
-
+/// {@template dependencies_scope}
 /// A widget which is responsible for providing the dependencies.
-class DependenciesScope extends InheritedWidget with ScopeMixin implements StoresContainer {
+/// {@endtemplate}
+class DependenciesScope extends InheritedWidget {
+  /// {@macro dependencies_scope}
   const DependenciesScope({
     required super.child,
     required this.dependencies,
-    required this.repositories,
     super.key,
   });
 
-  @override
-  final DependenciesStore dependencies;
+  /// The dependencies
+  final Dependencies dependencies;
+
+  /// Get the dependencies from the [context].
+  static Dependencies of(BuildContext context) =>
+      ScopeMixin.scopeOf<DependenciesScope>(context, listen: false)
+          .dependencies;
 
   @override
-  final RepositoriesStore repositories;
-
-  /// Get only dependencies from the widget
-  static DependenciesStore dependenciesOf(BuildContext context) =>
-      _maybeOf(context)?.dependencies ??
-      ScopeMixin.notFoundInheritedWidgetOfExactType<DependenciesScope>();
-
-  /// Get only repositories from the widget
-  static RepositoriesStore repositoriesOf(BuildContext context) =>
-      _maybeOf(context)?.repositories ??
-      ScopeMixin.notFoundInheritedWidgetOfExactType<DependenciesScope>();
-
-  static StoresContainer? _maybeOf(BuildContext context) =>
-      ScopeMixin.scopeMaybeOf<DependenciesScope>(
-        context,
-        listen: false,
-      );
-
-  static StoresContainer of(BuildContext context) =>
-      _maybeOf(context) ?? ScopeMixin.notFoundInheritedWidgetOfExactType<DependenciesScope>();
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty<Dependencies>('dependencies', dependencies),
+    );
+  }
 
   @override
   bool updateShouldNotify(DependenciesScope oldWidget) => false;
