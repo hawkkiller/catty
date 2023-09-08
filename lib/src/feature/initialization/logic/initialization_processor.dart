@@ -1,5 +1,6 @@
 import 'package:catty/src/feature/app/logic/tracking_manager.dart';
 import 'package:catty/src/feature/initialization/logic/initialization_steps.dart';
+import 'package:catty/src/feature/initialization/model/dependencies.dart';
 import 'package:catty/src/feature/initialization/model/environment_store.dart';
 import 'package:catty/src/feature/initialization/model/initialization_hook.dart';
 import 'package:catty/src/feature/initialization/model/initialization_progress.dart';
@@ -7,7 +8,11 @@ import 'package:flutter/foundation.dart';
 
 part 'initialization_factory.dart';
 
+/// {@template initialization_processor}
+/// A class which is responsible for processing initialization steps.
+/// {@endtemplate}
 mixin InitializationProcessor {
+  /// Process initialization steps.
   Future<InitializationResult> processInitialization({
     required Map<String, StepAction> steps,
     required InitializationFactory factory,
@@ -16,32 +21,65 @@ mixin InitializationProcessor {
     final stopwatch = Stopwatch()..start();
     var stepCount = 0;
     final env = factory.getEnvironmentStore();
-    var progress = InitializationProgress(environment: env);
+    final progress = InitializationProgress(
+      dependencies: DependenciesMutable(),
+      environmentStore: env,
+    );
     final trackingManager = factory.createTrackingManager(env);
     await trackingManager.enableReporting(
       shouldSend: !kDebugMode && env.isProduction,
     );
+    hook.onInit?.call();
     try {
       await for (final step in Stream.fromIterable(steps.entries)) {
         stepCount++;
-        final p = await step.value(progress);
-        if (p != null) {
-          progress = p;
-          hook.onInitializing?.call(p);
-        }
+        final stopWatch = Stopwatch()..start();
+        await step.value(progress);
+        hook.onInitializing?.call(
+          InitializationStepInfo(
+            stepName: step.key,
+            step: stepCount,
+            stepsCount: steps.length,
+            msSpent: (stopWatch..stop()).elapsedMilliseconds,
+          ),
+        );
       }
-    } on Object catch (_) {
-      hook.onError?.call(stepCount);
+    } on Object catch (e) {
+      hook.onError?.call(stepCount, e);
       rethrow;
     }
     stopwatch.stop();
     final result = InitializationResult(
-      dependencies: progress.dependencies(),
-      repositories: progress.repositories(),
+      dependencies: progress.freeze(),
       stepCount: stepCount,
       msSpent: stopwatch.elapsedMilliseconds,
     );
     hook.onInitialized?.call(result);
     return result;
   }
+}
+
+/// {@template initialization_step_info}
+/// A class which contains information about initialization step.
+/// {@endtemplate}
+class InitializationStepInfo {
+  /// {@macro initialization_step_info}
+  const InitializationStepInfo({
+    required this.stepName,
+    required this.step,
+    required this.stepsCount,
+    required this.msSpent,
+  });
+
+  /// The number of the step.
+  final int step;
+
+  /// The name of the step.
+  final String stepName;
+
+  /// The total number of steps.
+  final int stepsCount;
+
+  /// The number of milliseconds spent on the step.
+  final int msSpent;
 }

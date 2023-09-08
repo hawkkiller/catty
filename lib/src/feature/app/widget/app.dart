@@ -1,47 +1,57 @@
-import 'package:catty/src/core/widget/scope_widgets.dart';
-import 'package:catty/src/feature/app/widget/app_context.dart';
-import 'package:catty/src/feature/facts/bloc/facts_bloc.dart';
-import 'package:catty/src/feature/facts_history/bloc/facts_history_bloc.dart';
-import 'package:catty/src/feature/initialization/model/initialization_progress.dart';
+import 'package:catty/src/feature/app/widget/locale_scope.dart';
+import 'package:catty/src/feature/app/widget/material_context.dart';
+import 'package:catty/src/feature/app/widget/theme_scope.dart';
+import 'package:catty/src/feature/history/widget/cats_history_scope.dart';
+import 'package:catty/src/feature/initialization/logic/initialization_processor.dart';
+import 'package:catty/src/feature/initialization/model/dependencies.dart';
 import 'package:catty/src/feature/initialization/widget/dependencies_scope.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-/// A widget which is responsible for running the app.
+/// {@template app}
+/// [App] is an entry point to the application.
+///
+/// All the global scopes should be defined there.
+/// {@endtemplate}
 class App extends StatelessWidget {
+  /// {@macro app}
   const App({
     required this.result,
     super.key,
   });
 
-  void run() => runApp(this);
+  /// Running this function will result in attaching
+  /// corresponding [RenderObject] to the root of the tree.
+  void attach() => runApp(this);
 
+  /// The initialization result from the [InitializationProcessor]
   final InitializationResult result;
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty<InitializationResult>(
+        'result',
+        result,
+        description: 'The initialization result from the '
+            '[InitializationProcessor]',
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) => DefaultAssetBundle(
         bundle: SentryAssetBundle(),
-        child: MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (context) => FactsBloc(result.repositories.factsRepository)
-                ..add(
-                  const FactsEvent.load(),
-                ),
+        child: DependenciesScope(
+          dependencies: result.dependencies,
+          child: const ThemeScope(
+            child: LocaleScope(
+              child: CatsHistoryScope(
+                child: MaterialContext(),
+              ),
             ),
-            BlocProvider(
-              create: (context) => FactsHistoryBloc(result.repositories.factsHistoryRepository)
-                ..add(const FactsHistoryEvent.load()),
-            ),
-          ],
-          child: ScopeProvider(
-            buildScope: (child) => DependenciesScope(
-              dependencies: result.dependencies,
-              repositories: result.repositories,
-              child: child,
-            ),
-            child: const AppContext(),
           ),
         ),
       );

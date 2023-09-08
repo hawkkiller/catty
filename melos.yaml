@@ -1,0 +1,6 @@
+name: catty
+
+packages:
+  - packages/*
+
+scripts:

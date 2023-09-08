@@ -139,3 +139,5 @@ pubspec.lock
 .metadata
 
 .vscode/
+archive
+dart-defines.json

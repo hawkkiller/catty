@@ -1,64 +1,71 @@
 import 'dart:async';
 
-import 'package:catty/src/core/database/catty_database.dart';
-import 'package:catty/src/core/router/router.dart';
-import 'package:catty/src/feature/facts/data/cat_images_data_source.dart';
-import 'package:catty/src/feature/facts/data/facts_data_source.dart';
-import 'package:catty/src/feature/facts/data/facts_repository.dart';
-import 'package:catty/src/feature/facts_history/data/facts_history_data_source.dart';
-import 'package:catty/src/feature/facts_history/data/facts_history_repository.dart';
+import 'package:catty/src/feature/app/data/locale_datasource.dart';
+import 'package:catty/src/feature/app/data/locale_repository.dart';
+import 'package:catty/src/feature/app/data/theme_datasource.dart';
+import 'package:catty/src/feature/app/data/theme_repository.dart';
+import 'package:catty/src/feature/cats/data/cat_facts_data_source.dart';
+import 'package:catty/src/feature/cats/data/cat_images_data_source.dart';
+import 'package:catty/src/feature/cats/data/cats_repository.dart';
+import 'package:catty/src/feature/history/data/cats_history_data_source.dart';
+import 'package:catty/src/feature/history/data/cats_history_repository.dart';
+import 'package:catty/src/feature/initialization/model/dependencies.dart';
 import 'package:catty/src/feature/initialization/model/initialization_progress.dart';
-import 'package:dart_openai/openai.dart';
+import 'package:dart_openai/dart_openai.dart';
+import 'package:database/database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-typedef StepAction = FutureOr<InitializationProgress>? Function(
-  InitializationProgress progress,
-);
+/// A function which represents a single initialization step.
+typedef StepAction = FutureOr<void>? Function(InitializationProgress progress);
+
+/// The initialization steps, which are executed in the order they are defined.
+///
+/// The [Dependencies] object is passed to each step, which allows the step to
+/// set the dependency, and the next step to use it.
 mixin InitializationSteps {
+  /// The initialization steps,
+  /// which are executed in the order they are defined.
   final initializationSteps = <String, StepAction>{
-    ..._dependencies,
-    ..._data,
-  };
-  static final _dependencies = <String, StepAction>{
-    'Init OpenAI': (progress) {
-      OpenAI.apiKey = progress.environment.openaiKey;
-      return progress;
-    },
-    'Init Shared Preferences': (progress) async {
+    'Shared Preferences': (progress) async {
       final sharedPreferences = await SharedPreferences.getInstance();
-      return progress.copyWith(
-        preferences: sharedPreferences,
+      progress.dependencies.sharedPreferences = sharedPreferences;
+    },
+    'Theme Repository': (progress) {
+      final sharedPreferences = progress.dependencies.sharedPreferences;
+      final themeDataSource = ThemeDataSourceImpl(sharedPreferences);
+      progress.dependencies.themeRepository = ThemeRepositoryImpl(
+        themeDataSource,
       );
     },
-    'Init Router': (progress) {
-      final router = AppRouter();
-      return progress.copyWith(
-        router: router,
+    'Locale Repository': (progress) {
+      final sharedPreferences = progress.dependencies.sharedPreferences;
+      final localeDataSource = LocaleDataSourceImpl(
+        sharedPreferences: sharedPreferences,
+      );
+      progress.dependencies.localeRepository = LocaleRepositoryImpl(
+        localeDataSource,
       );
     },
-    'Init Drift Database': (progress) {
-      final cattyDatabase = CattyDatabase(name: 'catty');
-      return progress.copyWith(
-        database: cattyDatabase,
-      );
-    }
-  };
-  static final _data = <String, StepAction>{
-    'Init Facts Repository': (progress) {
-      final factsRepository = FactsRepositoryImpl(
-        factsDataSource: FactsDataSourceGPT(),
-        catImagesDataSource: CatImagesDataSourceTheCatApi(),
-      );
-      return progress.copyWith(
-        factsRepository: factsRepository,
+    'CatsRepository': (progress) {
+      OpenAI.apiKey = progress.environmentStore.openAiApiKey;
+      final factsDataSource = CatFactsDataSourceGPT();
+
+      final catImagesDataSource = CatImagesDataSourceTheCatApi();
+
+      progress.dependencies.catsRepository = CatsRepositoryImpl(
+        factsDataSource: factsDataSource,
+        catImagesDataSource: catImagesDataSource,
       );
     },
-    'Init Facts History Repository': (progress) {
-      final factsHistoryRepository = FactsHistoryRepositoryImpl(
-        CatsHistoryDao(progress.database!),
+    'CatsHistoryRepository': (progress) async {
+      final database = await createExecutor('cats_history.db');
+
+      final catsHistoryDataSource = CatsHistoryDataSourceDrift(
+        AppDatabase(database),
       );
-      return progress.copyWith(
-        factsHistoryRepository: factsHistoryRepository,
+
+      progress.dependencies.catsHistoryRepository = CatsHistoryRepositoryImpl(
+        catsHistoryDataSource,
       );
     },
   };
