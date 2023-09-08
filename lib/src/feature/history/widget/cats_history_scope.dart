@@ -19,6 +19,12 @@ abstract interface class CatsHistoryController {
 
   /// Load cats history.
   List<CatsHistoryEntity> get history;
+
+  /// Check if loading in progress.
+  bool get isInProgress;
+
+  /// Check if reached end.
+  bool get reachedEnd;
 }
 
 /// {@template cats_history_scope}
@@ -58,9 +64,7 @@ class _CatsHistoryScopeState extends State<CatsHistoryScope>
       DependenciesScope.of(context).catsHistoryRepository,
     );
     _catsHistoryState = _catsHistoryBloc.state;
-    _catsHistoryBloc.add(
-      const CatsHistoryEvent.load(limit: 20),
-    );
+    loadMore();
     super.initState();
   }
 
@@ -81,6 +85,12 @@ class _CatsHistoryScopeState extends State<CatsHistoryScope>
 
   @override
   List<CatsHistoryEntity> get history => _catsHistoryState.history;
+
+  @override
+  bool get isInProgress => _catsHistoryState.isInProgress;
+
+  @override
+  bool get reachedEnd => _catsHistoryState.reachedEnd;
 
   @override
   void loadMore() => _catsHistoryBloc.add(

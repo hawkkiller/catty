@@ -244,6 +244,12 @@ final class CatsHistoryBloc extends Bloc<CatsHistoryEvent, CatsHistoryState> {
     Emitter<CatsHistoryState> emitter,
   ) async {
     try {
+      emitter(
+        CatsHistoryState.inProgress(
+          history: state.history,
+          reachedEnd: state.reachedEnd,
+        ),
+      );
       final entity = await _repository.insert(
         event.fact,
         event.image,
@@ -284,7 +290,6 @@ final class CatsHistoryBloc extends Bloc<CatsHistoryEvent, CatsHistoryState> {
             offset: history.length,
           )
           .toList();
-
       return emitter(
         CatsHistoryState.idle(
           history: [...history, ...newHistory],

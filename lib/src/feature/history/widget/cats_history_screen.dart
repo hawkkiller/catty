@@ -22,9 +22,11 @@ class _CatsHistoryScreenState extends State<CatsHistoryScreen> {
   void initState() {
     _scrollController = ScrollController()
       ..addListener(() {
-        if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent) {
-          CatsHistoryScope.of(context).loadMore();
+        final position = _scrollController.position;
+        final scope = CatsHistoryScope.of(context, listen: false);
+        if (position.pixels > position.maxScrollExtent / 1.5 &&
+            !scope.isInProgress && !scope.reachedEnd) {
+          scope.loadMore();
         }
       });
 
@@ -87,6 +89,17 @@ class _CatsHistoryScreenState extends State<CatsHistoryScreen> {
                     );
                   },
                   childCount: CatsHistoryScope.of(context).history.length,
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Center(
+                  child: Visibility(
+                    visible: CatsHistoryScope.of(context).isInProgress,
+                    child: const CircularProgressIndicator.adaptive(),
+                  ),
                 ),
               ),
             ),
