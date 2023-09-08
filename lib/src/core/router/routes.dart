@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:catty/src/feature/cats/widget/cats_screen.dart';
+import 'package:catty/src/feature/history/widget/cats_history_screen.dart';
 import 'package:catty/src/feature/home/widget/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -37,14 +38,20 @@ class CatsRoute extends GoRouteData {
   const CatsRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => const CatsScreen();
+  Widget build(
+    BuildContext context,
+    GoRouterState state,
+  ) =>
+      const CatsScreen();
 }
 
 class HistoryRoute extends GoRouteData {
   const HistoryRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => Container(
-        color: Colors.blue,
-      );
+  Widget build(
+    BuildContext context,
+    GoRouterState state,
+  ) =>
+      const CatsHistoryScreen();
 }

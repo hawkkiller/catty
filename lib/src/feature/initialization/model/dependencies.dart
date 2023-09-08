@@ -1,6 +1,7 @@
 import 'package:catty/src/feature/app/data/locale_repository.dart';
 import 'package:catty/src/feature/app/data/theme_repository.dart';
 import 'package:catty/src/feature/cats/data/cats_repository.dart';
+import 'package:catty/src/feature/history/data/cats_history_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,6 +23,9 @@ abstract base class Dependencies with Diagnosticable {
 
   /// [CatsRepository] that provides data about cats
   abstract final CatsRepository catsRepository;
+
+  /// [CatsHistoryRepository] that saves history of facts about cats
+  abstract final CatsHistoryRepository catsHistoryRepository;
 
   /// Freeze dependencies, so they cannot be modified
   Dependencies freeze();
@@ -45,6 +49,18 @@ abstract base class Dependencies with Diagnosticable {
       DiagnosticsProperty<LocaleRepository>(
         'localeRepository',
         localeRepository,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty<CatsRepository>(
+        'catsRepository',
+        catsRepository,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty<CatsHistoryRepository>(
+        'catsHistoryRepository',
+        catsHistoryRepository,
       ),
     );
   }
@@ -72,11 +88,15 @@ final class DependenciesMutable extends Dependencies {
   late CatsRepository catsRepository;
 
   @override
+  late CatsHistoryRepository catsHistoryRepository;
+
+  @override
   Dependencies freeze() => _DependenciesImmutable(
         sharedPreferences: sharedPreferences,
         themeRepository: themeRepository,
         localeRepository: localeRepository,
         catsRepository: catsRepository,
+        catsHistoryRepository: catsHistoryRepository,
       );
 }
 
@@ -92,6 +112,7 @@ final class _DependenciesImmutable extends Dependencies {
     required this.themeRepository,
     required this.localeRepository,
     required this.catsRepository,
+    required this.catsHistoryRepository,
   });
 
   @override
@@ -105,6 +126,9 @@ final class _DependenciesImmutable extends Dependencies {
 
   @override
   final CatsRepository catsRepository;
+  
+  @override
+  final CatsHistoryRepository catsHistoryRepository;
 
   @override
   Dependencies freeze() => this;

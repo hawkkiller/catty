@@ -1,6 +1,7 @@
 import 'package:catty/src/feature/app/widget/locale_scope.dart';
 import 'package:catty/src/feature/app/widget/material_context.dart';
 import 'package:catty/src/feature/app/widget/theme_scope.dart';
+import 'package:catty/src/feature/history/widget/cats_history_scope.dart';
 import 'package:catty/src/feature/initialization/logic/initialization_processor.dart';
 import 'package:catty/src/feature/initialization/model/dependencies.dart';
 import 'package:catty/src/feature/initialization/widget/dependencies_scope.dart';
@@ -47,7 +48,9 @@ class App extends StatelessWidget {
           dependencies: result.dependencies,
           child: const ThemeScope(
             child: LocaleScope(
-              child: MaterialContext(),
+              child: CatsHistoryScope(
+                child: MaterialContext(),
+              ),
             ),
           ),
         ),

@@ -7,9 +7,12 @@ import 'package:catty/src/feature/app/data/theme_repository.dart';
 import 'package:catty/src/feature/cats/data/cat_facts_data_source.dart';
 import 'package:catty/src/feature/cats/data/cat_images_data_source.dart';
 import 'package:catty/src/feature/cats/data/cats_repository.dart';
+import 'package:catty/src/feature/history/data/cats_history_repository.dart';
+import 'package:catty/src/feature/history/data/cats_history_data_source.dart';
 import 'package:catty/src/feature/initialization/model/dependencies.dart';
 import 'package:catty/src/feature/initialization/model/initialization_progress.dart';
 import 'package:dart_openai/dart_openai.dart';
+import 'package:database/database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// A function which represents a single initialization step.
@@ -52,6 +55,17 @@ mixin InitializationSteps {
       progress.dependencies.catsRepository = CatsRepositoryImpl(
         factsDataSource: factsDataSource,
         catImagesDataSource: catImagesDataSource,
+      );
+    },
+    'CatsHistoryRepository': (progress) async {
+      final database = await createExecutor('cats_history.db');
+
+      final catsHistoryDataSource = CatsHistoryDataSourceDrift(
+        AppDatabase(database),
+      );
+
+      progress.dependencies.catsHistoryRepository = CatsHistoryRepositoryImpl(
+        catsHistoryDataSource,
       );
     },
   };

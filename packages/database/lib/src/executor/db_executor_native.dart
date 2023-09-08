@@ -10,7 +10,7 @@ import 'package:path_provider/path_provider.dart';
 FutureOr<QueryExecutor> createExecutor(String name) {
   final db = LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(path.join(dbFolder.path, 'db.sqlite'));
+    final file = File(path.join(dbFolder.path, name));
     return NativeDatabase(file);
   });
 

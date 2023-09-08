@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:catty/src/feature/cats/bloc/cats_bloc.dart';
+import 'package:catty/src/feature/history/widget/cats_history_scope.dart';
 import 'package:catty/src/feature/initialization/widget/dependencies_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,11 +38,28 @@ class _CatsScreenState extends State<CatsScreen> {
           onPressed: _loadFacts,
           child: const Icon(Icons.generating_tokens),
         ),
-        body: BlocBuilder<CatsBloc, CatsState>(
+        body: BlocConsumer<CatsBloc, CatsState>(
+          listener: (context, state) {
+            state.maybeMap(
+              orElse: () {},
+              idle: (state) {
+                final fact = state.fact;
+                final image = state.image;
+                final error = state.error;
+                if (state.finished &&
+                    fact != null &&
+                    image != null &&
+                    error == null) {
+                  CatsHistoryScope.of(context, listen: false).save(fact, image);
+                }
+              },
+            );
+          },
           bloc: _catsBloc,
           builder: (context, state) {
             final image = state.image;
             final fact = state.fact;
+
             return CustomScrollView(
               slivers: [
                 SliverAppBar(
@@ -69,7 +87,7 @@ class _CatsScreenState extends State<CatsScreen> {
                       padding: const EdgeInsets.all(16),
                       child: SizedBox(
                         width: double.infinity,
-                        child: Text(
+                        child: SelectableText(
                           fact,
                           style: Theme.of(context).textTheme.headlineLarge,
                           textAlign: TextAlign.center,

@@ -51,14 +51,13 @@ dependencies:
   path_provider: 2.1.0
 
   # Packages
-  rest_client:
-    path: packages/rest_client
-
   database:
     path: packages/database
+
   cached_network_image: ^3.2.3
   dart_openai: ^4.0.0
   http: ^1.1.0
+  drift: ^2.10.0
 
 dev_dependencies:
   # Testing
