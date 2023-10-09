@@ -51,7 +51,7 @@ dependencies:
 
   # Codegen annotations
   json_annotation: ^4.8.0
-  freezed_annotation: 2.2.0
+  freezed_annotation: 2.4.1
 
   # Logging
   stack_trace: 1.11.0
